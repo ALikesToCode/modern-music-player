@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const nextBtn = document.querySelector('.next-btn');
     const shuffleBtn = document.querySelector('.shuffle-btn');
     const repeatBtn = document.querySelector('.repeat-btn');
+    const shareBtn = document.querySelector('.share-btn');
     const progressBar = document.querySelector('.progress');
     const volumeSlider = document.querySelector('.volume-slider');
     const currentTimeEl = document.querySelector('.current-time');
@@ -20,22 +21,70 @@ document.addEventListener('DOMContentLoaded', () => {
             artist: 'AI generated music',
             duration: '0:00',
             audioSrc: '/music/conversation_of_plant.mp3',
-            cover: 'https://picsum.photos/200?1'
+            cover: 'https://picsum.photos/200?1',
+            id: 'conversation_of_plant'
         },
         {
             title: 'Non-cooperation Movement',
             artist: 'AI generated music',
             duration: '0:00',
             audioSrc: '/music/Non-cooperation-movenment.mp3',
-            cover: 'https://picsum.photos/200?2'
+            cover: 'https://picsum.photos/200?2',
+            id: 'non_cooperation_movement'
         }
     ];
 
+    // Update OpenGraph metadata
     function updateOpenGraphMetadata(track) {
+        const baseUrl = window.location.origin + window.location.pathname;
+        const shareUrl = `${baseUrl}?song=${track.id}`;
+        
         document.querySelector('meta[property="og:title"]').setAttribute('content', track.title);
         document.querySelector('meta[property="og:description"]').setAttribute('content', `Now playing: ${track.title} by ${track.artist}`);
+        document.querySelector('meta[property="og:url"]').setAttribute('content', shareUrl);
         document.querySelector('meta[property="og:image"]').setAttribute('content', track.cover);
         document.querySelector('#og-audio').setAttribute('content', window.location.origin + track.audioSrc);
+        document.querySelector('#og-audio-title').setAttribute('content', track.title);
+        document.querySelector('#og-audio-artist').setAttribute('content', track.artist);
+
+        // Update URL without reloading the page
+        window.history.replaceState({}, '', shareUrl);
+    }
+
+    // Share functionality
+    async function shareSong() {
+        const track = playlist[currentTrackIndex];
+        const shareUrl = `${window.location.origin}${window.location.pathname}?song=${track.id}`;
+        
+        try {
+            if (navigator.share) {
+                await navigator.share({
+                    title: track.title,
+                    text: `Listen to ${track.title} by ${track.artist}`,
+                    url: shareUrl
+                });
+            } else {
+                // Fallback to copying to clipboard
+                await navigator.clipboard.writeText(shareUrl);
+                alert('Link copied to clipboard!');
+            }
+        } catch (err) {
+            console.error('Error sharing:', err);
+        }
+    }
+
+    // Load song from URL parameter
+    function loadSongFromUrl() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const songId = urlParams.get('song');
+        
+        if (songId) {
+            const songIndex = playlist.findIndex(track => track.id === songId);
+            if (songIndex !== -1) {
+                currentTrackIndex = songIndex;
+                loadTrack(currentTrackIndex);
+            }
+        }
     }
 
     function loadTrack(index) {
@@ -180,6 +229,12 @@ document.addEventListener('DOMContentLoaded', () => {
             nextBtn.click();
         }
     });
+
+    // Add share button event listener
+    shareBtn.addEventListener('click', shareSong);
+
+    // Load song from URL when page loads
+    loadSongFromUrl();
 
     // Initial load
     loadTrack(0);

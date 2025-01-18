@@ -6,13 +6,15 @@
     <title>Modern Music Player</title>
     
     <!-- OpenGraph Meta Tags -->
-    <meta property="og:title" content="Modern Music Player">
-    <meta property="og:description" content="Listen to your favorite music with our modern web player">
-    <meta property="og:type" content="music.playlist">
-    <meta property="og:url" content="https://your-domain.com/player">
-    <meta property="og:image" content="https://picsum.photos/1200/630">
+    <meta property="og:title" content="Modern Music Player" id="og-title">
+    <meta property="og:description" content="Listen to your favorite music" id="og-description">
+    <meta property="og:type" content="music.song">
+    <meta property="og:url" content="" id="og-url">
+    <meta property="og:image" content="https://picsum.photos/1200/630" id="og-image">
     <meta property="og:audio" content="" id="og-audio">
     <meta property="og:audio:type" content="audio/mpeg">
+    <meta property="og:audio:title" content="" id="og-audio-title">
+    <meta property="og:audio:artist" content="" id="og-audio-artist">
     
     <!-- Other Meta Tags -->
     <meta name="description" content="A modern web-based music player with playlist support">
@@ -27,8 +29,13 @@
             <div class="now-playing">
                 <img src="https://picsum.photos/200" alt="Album Art" class="album-art">
                 <div class="track-info">
-                    <h2 class="track-name">Track Name</h2>
-                    <p class="artist-name">Artist Name</p>
+                    <div class="track-info-content">
+                        <h2 class="track-name">Track Name</h2>
+                        <p class="artist-name">Artist Name</p>
+                    </div>
+                    <button class="share-btn" title="Share this song">
+                        <i class="fas fa-share-alt"></i>
+                    </button>
                 </div>
             </div>
         </div>

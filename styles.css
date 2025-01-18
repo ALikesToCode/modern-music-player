@@ -70,6 +70,38 @@ body {
 
 .track-info {
     flex-grow: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.track-info-content {
+    flex-grow: 1;
+}
+
+.share-btn {
+    background: var(--surface);
+    color: var(--text-primary);
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s var(--animation-timing);
+    flex-shrink: 0;
+}
+
+.share-btn:hover {
+    background: var(--primary-color);
+    transform: scale(1.1);
+}
+
+.share-btn i {
+    font-size: 1rem;
 }
 
 .track-name {
