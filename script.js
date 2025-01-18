@@ -32,35 +32,41 @@ document.addEventListener('DOMContentLoaded', () => {
                 margin: 0;
                 padding: 0;
                 background: transparent;
+                overflow: hidden;
             }
             .embed-player {
                 background: rgba(25, 25, 35, 0.95);
-                padding: 16px;
+                padding: 12px;
                 border-radius: 12px;
                 width: 100%;
+                height: 100%;
                 box-sizing: border-box;
                 font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             }
             .embed-player-content {
                 display: flex;
                 align-items: center;
-                gap: 16px;
+                gap: 12px;
+                height: 100%;
             }
             .embed-art {
-                width: 80px;
-                height: 80px;
+                width: 60px;
+                height: 60px;
                 border-radius: 8px;
                 object-fit: cover;
             }
             .embed-info {
                 flex: 1;
                 min-width: 0;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
             }
             .embed-text {
                 margin-bottom: 8px;
             }
             .embed-text h2 {
-                font-size: 1rem;
+                font-size: 0.9rem;
                 color: #fff;
                 margin: 0 0 4px 0;
                 white-space: nowrap;
@@ -68,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 text-overflow: ellipsis;
             }
             .embed-text p {
-                font-size: 0.875rem;
+                font-size: 0.8rem;
                 color: rgba(255, 255, 255, 0.7);
                 margin: 0;
             }
@@ -115,6 +121,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('embed-cover').src = song.cover;
                 document.getElementById('embed-title').textContent = song.title;
                 document.getElementById('embed-artist').textContent = song.artist;
+
+                // Update meta tags
+                document.title = `${song.title} - ${song.artist}`;
+                document.querySelector('meta[name="description"]').content = `Listen to ${song.title} by ${song.artist}`;
             }
         }
         return; // Don't initialize the full player
@@ -177,6 +187,9 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('.track-name').textContent = track.title;
         document.querySelector('.artist-name').textContent = track.artist;
         document.querySelector('.album-art').src = track.cover;
+        
+        // Update meta tags
+        updateMetaTags(track);
         
         // Reset progress
         progressBar.style.width = '0%';
@@ -243,6 +256,27 @@ document.addEventListener('DOMContentLoaded', () => {
             playBtn.innerHTML = '<i class="fas fa-play"></i>';
             currentAudio.pause();
         }
+    }
+
+    function updateMetaTags(track) {
+        const baseUrl = window.location.origin + window.location.pathname;
+        const shareUrl = `${baseUrl}?song=${track.id}`;
+        const embedUrl = `${baseUrl}?song=${track.id}&embed=true`;
+        
+        // Update OpenGraph tags
+        document.querySelector('#og-title').content = `${track.title} - ${track.artist}`;
+        document.querySelector('#og-description').content = `Listen to ${track.title} by ${track.artist}`;
+        document.querySelector('#og-url').content = shareUrl;
+        document.querySelector('#og-image').content = track.cover;
+        
+        // Update Twitter Card tags
+        document.querySelector('#twitter-title').content = `${track.title} - ${track.artist}`;
+        document.querySelector('#twitter-description').content = `Listen to ${track.title} by ${track.artist}`;
+        document.querySelector('#twitter-image').content = track.cover;
+        document.querySelector('#twitter-player').content = embedUrl;
+        
+        // Update page URL without reloading
+        window.history.replaceState({}, '', shareUrl);
     }
 
     // Player controls
