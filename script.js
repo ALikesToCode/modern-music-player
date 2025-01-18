@@ -1,4 +1,125 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Check if we're in embed mode
+    const urlParams = new URLSearchParams(window.location.search);
+    const isEmbed = urlParams.get('embed') === 'true';
+
+    if (isEmbed) {
+        // Create minimal embedded player
+        document.body.innerHTML = `
+            <div class="embed-player">
+                <div class="embed-player-content">
+                    <img id="embed-cover" alt="Album Art" class="embed-art">
+                    <div class="embed-info">
+                        <div class="embed-text">
+                            <h2 id="embed-title"></h2>
+                            <p id="embed-artist"></p>
+                        </div>
+                        <div class="embed-controls">
+                            <audio id="embed-audio" controls>
+                                <source type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Add embedded player styles
+        const style = document.createElement('style');
+        style.textContent = `
+            body {
+                margin: 0;
+                padding: 0;
+                background: transparent;
+            }
+            .embed-player {
+                background: rgba(25, 25, 35, 0.95);
+                padding: 16px;
+                border-radius: 12px;
+                width: 100%;
+                box-sizing: border-box;
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            }
+            .embed-player-content {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+            }
+            .embed-art {
+                width: 80px;
+                height: 80px;
+                border-radius: 8px;
+                object-fit: cover;
+            }
+            .embed-info {
+                flex: 1;
+                min-width: 0;
+            }
+            .embed-text {
+                margin-bottom: 8px;
+            }
+            .embed-text h2 {
+                font-size: 1rem;
+                color: #fff;
+                margin: 0 0 4px 0;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .embed-text p {
+                font-size: 0.875rem;
+                color: rgba(255, 255, 255, 0.7);
+                margin: 0;
+            }
+            .embed-controls {
+                width: 100%;
+            }
+            audio {
+                width: 100%;
+                height: 32px;
+            }
+            audio::-webkit-media-controls-panel {
+                background: rgba(255, 255, 255, 0.1);
+            }
+            audio::-webkit-media-controls-current-time-display,
+            audio::-webkit-media-controls-time-remaining-display {
+                color: #fff;
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Load the song
+        const songId = urlParams.get('song');
+        if (songId) {
+            const playlist = [
+                {
+                    title: 'Conversation of Plant',
+                    artist: 'AI generated music',
+                    audioSrc: '/music/conversation_of_plant.mp3',
+                    cover: 'https://picsum.photos/200?1',
+                    id: 'conversation_of_plant'
+                },
+                {
+                    title: 'Non-cooperation Movement',
+                    artist: 'AI generated music',
+                    audioSrc: '/music/Non-cooperation-movenment.mp3',
+                    cover: 'https://picsum.photos/200?2',
+                    id: 'non_cooperation_movement'
+                }
+            ];
+
+            const song = playlist.find(track => track.id === songId);
+            if (song) {
+                document.getElementById('embed-audio').src = song.audioSrc;
+                document.getElementById('embed-cover').src = song.cover;
+                document.getElementById('embed-title').textContent = song.title;
+                document.getElementById('embed-artist').textContent = song.artist;
+            }
+        }
+        return; // Don't initialize the full player
+    }
+
     // Player elements
     const playBtn = document.querySelector('.play-btn');
     const prevBtn = document.querySelector('.prev-btn');
@@ -165,7 +286,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const track = playlist[currentTrackIndex];
         const shareUrl = `${window.location.origin}${window.location.pathname}?song=${track.id}`;
         const embedUrl = `${window.location.origin}${window.location.pathname}?song=${track.id}&embed=true`;
-        const embedCode = `<iframe src="${embedUrl}" width="100%" height="180" frameborder="0" allow="autoplay"></iframe>`;
+        const embedCode = `<div style="width:100%;max-width:600px;margin:0 auto;">
+    <iframe src="${embedUrl}" 
+        width="100%" 
+        height="140" 
+        frameborder="0" 
+        allowtransparency="true" 
+        style="border-radius:12px;background:transparent;"
+        allow="autoplay">
+    </iframe>
+</div>`;
         
         // Update preview
         document.querySelector('.share-preview-image').src = track.cover;
