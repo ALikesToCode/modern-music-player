@@ -307,12 +307,15 @@ button:hover {
 }
 
 .volume-slider {
-    flex-grow: 1;
-    height: 4px;
     -webkit-appearance: none;
-    background: rgba(255, 255, 255, 0.2);
+    appearance: none;
+    width: 100px;
+    height: 4px;
     border-radius: 2px;
-    transition: height 0.2s var(--animation-timing);
+    background: var(--surface);
+    outline: none;
+    opacity: 0.7;
+    transition: opacity 0.2s;
 }
 
 .volume-slider:hover {

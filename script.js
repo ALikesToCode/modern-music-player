@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Check if we're in embed mode
-    const urlParams = new URLSearchParams(window.location.search);
-    const isEmbed = urlParams.get('embed') === 'true';
+    const params = new URLSearchParams(window.location.search);
+    const isEmbed = params.get('embed') === 'true';
 
     if (isEmbed) {
         // Create minimal embedded player
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.head.appendChild(style);
 
         // Load the song
-        const songId = urlParams.get('song');
+        const songId = params.get('song');
         if (songId) {
             const playlist = [
                 {
@@ -395,8 +395,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Load song from URL if present
-    const urlParams = new URLSearchParams(window.location.search);
-    const songId = urlParams.get('song');
+    const songId = params.get('song');
     if (songId) {
         const songIndex = playlist.findIndex(track => track.id === songId);
         if (songIndex !== -1) {
