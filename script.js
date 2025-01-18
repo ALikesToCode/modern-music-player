@@ -319,17 +319,20 @@ document.addEventListener('DOMContentLoaded', () => {
     function openShareModal() {
         const track = playlist[currentTrackIndex];
         const shareUrl = `${window.location.origin}${window.location.pathname}?song=${track.id}`;
-        const embedUrl = `${window.location.origin}${window.location.pathname}?song=${track.id}&embed=true`;
-        const embedCode = `<div style="width:100%;max-width:600px;margin:0 auto;">
-    <iframe src="${embedUrl}" 
-        width="100%" 
-        height="140" 
-        frameborder="0" 
-        allowtransparency="true" 
-        style="border-radius:12px;background:transparent;"
-        allow="autoplay">
-    </iframe>
-</div>`;
+        
+        // Create a preview URL that looks like a player
+        const previewUrl = `https://img.shields.io/badge/${encodeURIComponent(track.title)}-${encodeURIComponent(track.artist)}-8A2BE2?style=for-the-badge&logo=applemusic&logoColor=white`;
+        
+        const embedCode = `<a href="${shareUrl}" target="_blank" style="display:inline-block;width:100%;max-width:400px;text-decoration:none;">
+    <div style="background:rgba(25,25,35,0.95);padding:16px;border-radius:12px;display:flex;align-items:center;gap:16px;color:white;font-family:system-ui,-apple-system,sans-serif;">
+        <img src="${track.cover}" style="width:60px;height:60px;border-radius:8px;object-fit:cover;" alt="${track.title}">
+        <div style="flex:1;min-width:0;">
+            <div style="font-size:16px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px;">${track.title}</div>
+            <div style="font-size:14px;color:rgba(255,255,255,0.7);">${track.artist}</div>
+            <img src="${previewUrl}" alt="Play ${track.title}" style="margin-top:8px;max-width:100%;height:24px;">
+        </div>
+    </div>
+</a>`;
         
         // Update preview
         document.querySelector('.share-preview-image').src = track.cover;
